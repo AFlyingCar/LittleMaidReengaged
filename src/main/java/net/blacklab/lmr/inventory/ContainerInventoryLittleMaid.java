@@ -21,15 +21,15 @@ public class ContainerInventoryLittleMaid extends Container {
 	protected final EntityLittleMaid owner;
 
 	public ContainerInventoryLittleMaid(IInventory playerInventory, EntityLittleMaid pEntity) {
-//		super(pEntity.maidInventory, !pEntity.world.isRemote, pEntity.maidAvatar);
+//		super(pEntity.maidInventory, !pEntity.world.isRemote, pEntity.getMaidAvatar());
 		inventorySlots.clear();
 		inventoryItemStacks.clear();
 
-		InventoryLittleMaid maidInventory = pEntity.maidInventory;
+		InventoryLittleMaid maidInventory = pEntity.getMaidInventory();
 		owner = pEntity;
 		numRows = 2;
 		littlemaidInventory = maidInventory;
-		littlemaidInventory.openInventory(owner.maidAvatar);
+		littlemaidInventory.openInventory(owner.getMaidAvatar());
 
 		// ここがメイドの持ち物スロット
 		// Maid's inventory
@@ -162,7 +162,7 @@ public class ContainerInventoryLittleMaid extends Container {
 	@Override
 	public void onContainerClosed(EntityPlayer par1EntityPlayer) {
 		super.onContainerClosed(par1EntityPlayer);
-		littlemaidInventory.closeInventory(owner.maidAvatar);
+		littlemaidInventory.closeInventory(owner.getMaidAvatar());
 	}
 
 	@Override

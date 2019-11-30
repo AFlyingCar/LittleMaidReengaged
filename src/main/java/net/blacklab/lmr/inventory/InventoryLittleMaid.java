@@ -65,15 +65,24 @@ public class InventoryLittleMaid extends InventoryPlayer {
 	public ItemStack prevItems[];
 
 	public InventoryLittleMaid(EntityLittleMaid par1EntityLittleMaid) {
-		super(par1EntityLittleMaid.maidAvatar);
+		super(null);
 
 		entityLittleMaid = par1EntityLittleMaid;
-//		player = entityLittleMaid.maidAvatar;
+//		player = entityLittleMaid.getMaidAvatar();
 		// TODO InventoryPlayer.mainInventory became 'final'. S**t
 //		mainInventory = new ItemStack[maxInventorySize];
 		prevItems = new ItemStack[getSizeInventory()];
 		for (int i = 0; i < prevItems.length; i++) {
 			prevItems[i] = ItemStack.EMPTY;
+		}
+	}
+
+	private boolean hasInitialized = false;
+	public void initialize() {
+		if(!hasInitialized) {
+			this.player = entityLittleMaid.getMaidAvatar();
+			this.player.inventory = this;
+			hasInitialized = true;
 		}
 	}
 
@@ -146,7 +155,7 @@ public class InventoryLittleMaid extends InventoryPlayer {
 							entityLittleMaid, li, this.currentItem == li);
 				} catch (ClassCastException e) {
 					getStackInSlot(li).updateAnimation(this.player.world,
-							entityLittleMaid.maidAvatar, li, this.currentItem == li);
+							entityLittleMaid.getMaidAvatar(), li, this.currentItem == li);
 				}
 			}
 		}
@@ -404,7 +413,7 @@ public class InventoryLittleMaid extends InventoryPlayer {
 
 	public int getSmeltingItem() {
 		// 調理可能アイテムを返す
-		for (int i = 0; i < entityLittleMaid.maidInventory.getSizeInventory(); i++) {
+		for (int i = 0; i < entityLittleMaid.getMaidInventory().getSizeInventory(); i++) {
 			if (isItemSmelting(i) && i != currentItem) {
 				ItemStack mi = mainInventory.get(i);
 				if (mi.getMaxDamage() > 0 && mi.getItemDamage() == 0) {
