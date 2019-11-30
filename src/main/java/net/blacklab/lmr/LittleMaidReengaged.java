@@ -117,6 +117,15 @@ public class LittleMaidReengaged {
 	// 野生テクスチャ
 	public static boolean cfg_isFixedWildMaid = false;
 
+	public static boolean cfg_enableArcher = true;
+	public static boolean cfg_enableCooking = true;
+	public static boolean cfg_enableFarmer = true;
+	public static boolean cfg_enableFencer = true;
+	public static boolean cfg_enableHealer = true;
+	public static boolean cfg_enablePharmacist = true;
+	public static boolean cfg_enableShearer = true;
+	public static boolean cfg_enableTorchLayer = true;
+
 	// LivingSoundRate
 	public static float cfg_voiceRate = 0.1f;
 
@@ -243,6 +252,16 @@ public class LittleMaidReengaged {
 		} else if (cfg_maidOverdriveDelay > 128) {
 			cfg_maidOverdriveDelay = 128;
 		}
+
+		cfg_enableArcher = cfg.getBoolean("EnableArcher", true);
+		cfg_enableCooking = cfg.getBoolean("EnableCooking", true);
+		cfg_enableFarmer = cfg.getBoolean("EnableFarmer", true);
+		cfg_enableFencer = cfg.getBoolean("EnableFencer", true);
+		cfg_enableHealer = cfg.getBoolean("EnableHealer", true);
+		cfg_enablePharmacist = cfg.getBoolean("EnablePharmacist", true);
+		cfg_enableShearer = cfg.getBoolean("EnableShearer", true);
+		cfg_enableTorchLayer = cfg.getBoolean("EnableTorchLayer", true);
+
 
 		try {
 			cfg.saveConfig(getName(), evt);
