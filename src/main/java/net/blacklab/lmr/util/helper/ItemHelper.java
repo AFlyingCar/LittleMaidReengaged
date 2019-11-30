@@ -19,7 +19,7 @@ public class ItemHelper {
 
 	public static boolean hasSugar(EntityLittleMaid maid){
 		boolean flag = false;
-		for(ItemStack stack: maid.maidInventory.mainInventory){
+		for(ItemStack stack: maid.getMaidInventory().mainInventory){
 			if(stack.isEmpty()) continue;
 			if(isSugar(stack.getItem())){
 				flag = false;

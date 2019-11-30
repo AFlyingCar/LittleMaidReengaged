@@ -142,7 +142,7 @@ public class EntityCaps extends EntityCapsLiving {
 //		case caps_Arms:
 		case caps_HeadMount:
 			// TODO 従来HeadMountとか使ってた部分は全部削除した方がすっきりすると思う．
-			return owner.maidInventory.armorInventory.get(3);
+			return owner.getMaidInventory().armorInventory.get(3);
 //		case caps_HardPoint:
 		case caps_stabiliser:
 			return owner.maidStabilizer;
@@ -171,7 +171,7 @@ public class EntityCaps extends EntityCapsLiving {
 			}
 			return owner.mstatSwingStatus[(Integer)pArg[0]].onGround;
 		case caps_Inventory:
-			return owner.maidInventory;
+			return owner.getMaidInventory();
 		case caps_interestedAngle:
 			return owner.getInterestedAngle((Float)pArg[0]);
 //		case caps_currentArmor:

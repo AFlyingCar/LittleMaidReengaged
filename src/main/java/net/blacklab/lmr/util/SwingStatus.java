@@ -72,7 +72,7 @@ public class SwingStatus {
 		if (isUsingItem()) {
 			ItemStack itemstack;
 			try{
-				itemstack = pEntity.maidInventory.getStackInSlot(index);
+				itemstack = pEntity.getMaidInventory().getStackInSlot(index);
 			}catch(Exception e){ return; }
 			Entity lrentity = pEntity.world.isRemote ? null : pEntity;
 
@@ -84,7 +84,7 @@ public class SwingStatus {
 					updateItemUse(pEntity, 5);
 				}
 				if (--itemInUseCount <= 0 && lrentity != null) {
-					onItemUseFinish(pEntity.maidAvatar);
+					onItemUseFinish(pEntity.getMaidAvatar());
 				}
 			}
 		}
@@ -103,7 +103,7 @@ public class SwingStatus {
 	 */
 	public ItemStack getItemStack(EntityLittleMaid pEntity) {
 		if (index > -1) {
-			return pEntity.maidInventory.getStackInSlot(index);
+			return pEntity.getMaidInventory().getStackInSlot(index);
 		}
 		return ItemStack.EMPTY;
 	}
