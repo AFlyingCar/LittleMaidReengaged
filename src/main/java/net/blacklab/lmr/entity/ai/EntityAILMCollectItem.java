@@ -38,7 +38,7 @@ public class EntityAILMCollectItem extends EntityAIBase {
 	@Override
 	public boolean shouldExecute() {
 		if(theMaid.isMaidWaitEx()) return false;
-		if (theMaid.maidInventory.getFirstEmptyStack() > -1) {
+		if (theMaid.getMaidInventory().getFirstEmptyStack() > -1) {
 			List llist = theMaid.world.getEntitiesWithinAABB(EntityItem.class, theMaid.getEntityBoundingBox().grow(8F, 2D, 8F));
 			if (!llist.isEmpty()) {
 				int li = theMaid.getRNG().nextInt(llist.size());
@@ -84,7 +84,7 @@ public class EntityAILMCollectItem extends EntityAIBase {
 
 	@Override
 	public boolean shouldContinueExecuting() {
-		return !targetItem.isDead && (theMaid.maidInventory.getFirstEmptyStack() > -1) && theMaid.getDistanceSq(targetItem) < 100D;
+		return !targetItem.isDead && (theMaid.getMaidInventory().getFirstEmptyStack() > -1) && theMaid.getDistanceSq(targetItem) < 100D;
 	}
 
 	@Override

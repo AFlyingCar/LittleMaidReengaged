@@ -29,8 +29,6 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 	protected boolean fEnable;
 
 	protected EntityLittleMaid fMaid;
-	protected EntityPlayer fAvatar;
-	protected InventoryLittleMaid fInventory;
 	protected SwingStatus swingState;
 	protected World world;
 	protected EntityLivingBase fTarget;
@@ -39,8 +37,6 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 
 	public EntityAILMAttackArrow(EntityLittleMaid pEntityLittleMaid) {
 		fMaid = pEntityLittleMaid;
-		fAvatar = pEntityLittleMaid.maidAvatar;
-		fInventory = pEntityLittleMaid.maidInventory;
 		swingState = pEntityLittleMaid.getSwingStatusDominant();
 		world = pEntityLittleMaid.world;
 		fEnable = false;
@@ -49,7 +45,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 
 	public IEntityLittleMaidAvatar getAvatarIF()
 	{
-		return (IEntityLittleMaidAvatar)fAvatar;
+		return (IEntityLittleMaidAvatar)fMaid.getMaidAvatar();
 	}
 
 	@Override
@@ -120,7 +116,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 	@Override
 	public void resetTask() {
 		fTarget = null;
-		fAvatar.resetActiveHand();
+		fMaid.getMaidAvatar().resetActiveHand();
 		fForget=0;
 	}
 
@@ -208,8 +204,8 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 					boolean lcanattack = true;
 					boolean ldotarget = false;
 					double tpr = Math.sqrt(atl);
-					Entity lentity = CommonHelper.getRayTraceEntity(fMaid.maidAvatar, tpr + 1.0F, 1.0F, 1.0F);
-					ItemStack headstack = fInventory.armorInventory.get(3);
+					Entity lentity = CommonHelper.getRayTraceEntity(fMaid.getMaidAvatar(), tpr + 1.0F, 1.0F, 1.0F);
+					ItemStack headstack = fMaid.getMaidInventory().armorInventory.get(3);
 					Item helmid = headstack.isEmpty() ? null : headstack.getItem();
 					if (helmid == Items.DIAMOND_HELMET || helmid == Items.GOLDEN_HELMET) {
 						// 射線軸の確認
@@ -253,7 +249,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 						// シュート
 						// フルオート武器は射撃停止
 						LittleMaidReengaged.Debug("id:%d shoot.", fMaid.getEntityId());
-						fAvatar.stopActiveHand();
+						fMaid.getMaidAvatar().stopActiveHand();
 						fMaid.setSwing(30, EnumSound.shoot, !fMaid.isPlaying());
 						if (fMaid.isPlaying()) {
 							resetTask();
@@ -268,7 +264,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 								if (!fMaid.weaponFullAuto || lcanattack) {
 									int at = ((helmid == Items.IRON_HELMET) || (helmid == Items.DIAMOND_HELMET)) ? 26 : 16;
 									if (swingState.attackTime < at) {
-										ActionResult<ItemStack> result = litemstack.useItemRightClick(world, fAvatar, EnumHand.MAIN_HAND);
+										ActionResult<ItemStack> result = litemstack.useItemRightClick(world, fMaid.getMaidAvatar(), EnumHand.MAIN_HAND);
 										if (result.getType() != EnumActionResult.SUCCESS) {
 											LittleMaidReengaged.Debug("id:%d bow trigger failed.", fMaid.getEntityId());
 											resetTask();
@@ -286,9 +282,9 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 						}
 						else if (litemstack.getMaxItemUseDuration() == 0) {
 							// 通常投擲兵装
-							if (swingState.canAttack() && !fAvatar.isHandActive()) {
+							if (swingState.canAttack() && !fMaid.getMaidAvatar().isHandActive()) {
 								if (lcanattack) {
-									litemstack = litemstack.useItemRightClick(world, fAvatar, EnumHand.MAIN_HAND).getResult();
+									litemstack = litemstack.useItemRightClick(world, fMaid.getMaidAvatar(), EnumHand.MAIN_HAND).getResult();
 									// 意図的にショートスパンで音が鳴るようにしてある
 									fMaid.mstatAimeBow = false;
 									fMaid.setSwing(10, (litemstack.getCount() == itemcount) ? EnumSound.shoot_burst : EnumSound.Null, !fMaid.isPlaying());
@@ -306,7 +302,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 						} else {
 							// リロード有りの特殊兵装
 							if (!getAvatarIF().isUsingItemLittleMaid()) {
-								litemstack = litemstack.useItemRightClick(world, fAvatar, EnumHand.MAIN_HAND).getResult();
+								litemstack = litemstack.useItemRightClick(world, fMaid.getMaidAvatar(), EnumHand.MAIN_HAND).getResult();
 								LittleMaidReengaged.Debug(String.format("%d reload.", fMaid.getEntityId()));
 							}
 							// リロード終了まで強制的に構える
@@ -320,7 +316,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 						fMaid.destroyCurrentEquippedItem();
 						fMaid.getNextEquipItem();
 					} else {
-						fInventory.setInventoryCurrentSlotContents(litemstack);
+						fMaid.getMaidInventory().setInventoryCurrentSlotContents(litemstack);
 					}
 
 					// 発生したEntityをチェックしてmaidAvatarEntityが居ないかを確認
@@ -343,7 +339,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 									// 変数を検索しAvatarと同じ物を自分と置き換える
 									ff.setAccessible(true);
 									Object eo = ff.get(te);
-									if (eo.equals(fAvatar)) {
+									if (eo.equals(fMaid.getMaidAvatar())) {
 										ff.set(te, this);
 										LMM_LittleMaidMobNX.Debug("Replace FO Owner.");
 									}
@@ -359,7 +355,7 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 							if (obj instanceof EntityCreature && !(obj instanceof LMM_EntityLittleMaid)) {
 								EntityCreature ecr = (EntityCreature)obj;
 								//1.8修正検討
-								if (ecr.getAttackTarget() == fAvatar) {
+								if (ecr.getAttackTarget() == fMaid.getMaidAvatar()) {
 									ecr.setAttackTarget(fMaid);
 									ecr.setRevengeTarget(fMaid);
 									ecr.getNavigator().getPathToEntityLiving(fMaid);
@@ -377,9 +373,9 @@ public class EntityAILMAttackArrow extends EntityAIBase implements IEntityAI {
 //				fMaid.setAttackTarget(null);
 			}
 //			if (fMaid.weaponFullAuto && getAvatarIF().getIsItemTrigger()) {
-//				fAvatar.stopActiveHand();
+//				fMaid.getMaidAvatar().stopActiveHand();
 //			} else {
-//				fAvatar.clearItemInUse();
+//				fMaid.getMaidAvatar().clearItemInUse();
 //			}
 			resetTask();
 		}

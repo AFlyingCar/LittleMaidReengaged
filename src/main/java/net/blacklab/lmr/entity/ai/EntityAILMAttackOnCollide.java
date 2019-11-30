@@ -92,7 +92,7 @@ public class EntityAILMAttackOnCollide extends EntityAIBase implements IEntityAI
 		}
 		theMaid.getNavigator().setPath(pathToTarget, moveSpeed);
 		rerouteTimer = 0;
-		theMaid.maidAvatar.stopActiveHand();
+		theMaid.getMaidAvatar().stopActiveHand();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class EntityAILMAttackOnCollide extends EntityAIBase implements IEntityAI
 		theMaid.getNavigator().clearPath();
 		theMaid.setAttackTarget(null);
 		theMaid.setRevengeTarget(null);
-//		theMaid.maidAvatar.stopActiveHand();
+//		theMaid.getMaidAvatar().stopActiveHand();
 	}
 
 	@Override
@@ -166,15 +166,15 @@ public class EntityAILMAttackOnCollide extends EntityAIBase implements IEntityAI
 				if (lel == theMaid) {
 					ItemStack li = theMaid.getCurrentEquippedItem();
 					if (!li.isEmpty() && li.getItemUseAction() == EnumAction.BLOCK) {
-						li.useItemRightClick(world, theMaid.maidAvatar, EnumHand.MAIN_HAND);
+						li.useItemRightClick(world, theMaid.getMaidAvatar(), EnumHand.MAIN_HAND);
 						lguard = true;
 					}
 				}
 			}
 			return;
 		}
-		if (theMaid.maidAvatar.isHandActive() && !lguard) {
-			theMaid.maidAvatar.stopActiveHand();
+		if (theMaid.getMaidAvatar().isHandActive() && !lguard) {
+			theMaid.getMaidAvatar().stopActiveHand();
 		}
 
 		if (!theMaid.getSwingStatusDominant().canAttack()) {
