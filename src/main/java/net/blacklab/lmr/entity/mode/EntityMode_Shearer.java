@@ -124,7 +124,7 @@ public class EntityMode_Shearer extends EntityModeBase {
 
 	@Override
 	public void updateAITick(int pMode) {
-		ItemStack litemstack = owner.maidInventory.getCurrentItem();
+		ItemStack litemstack = owner.getMaidInventory().getCurrentItem();
 		if (!litemstack.isEmpty()
 				&& (owner.getAttackTarget() instanceof EntityCreeper/* || owner.getAttackTarget().getClass().isAssignableFrom(EntityTNTPrimed.class)*/)) {
 			if (pMode == mmode_Ripper) {
@@ -158,13 +158,13 @@ public class EntityMode_Shearer extends EntityModeBase {
 				if (owner.isMovementBlocked() || timeSinceIgnited > 22) {
 					owner.getLookHelper().setLookPositionWithEntity(owner.getMaidMasterEntity(), 40F, 40F);
 				}
-				LittleMaidReengaged.Debug(String.format("ID:%d(%s)-dom:%d(%d)", owner.getEntityId(), owner.world.isRemote ? "C" : "W", owner.getDominantArm(), owner.maidInventory.currentItem));
+				LittleMaidReengaged.Debug(String.format("ID:%d(%s)-dom:%d(%d)", owner.getEntityId(), owner.world.isRemote ? "C" : "W", owner.getDominantArm(), owner.getMaidInventory().currentItem));
 
-				if (owner.maidInventory.isItemExplord(owner.maidInventory.currentItem) && timeSinceIgnited++ > 30) {
+				if (owner.getMaidInventory().isItemExplord(owner.getMaidInventory().currentItem) && timeSinceIgnited++ > 30) {
 					// TODO:自爆威力を対応させたいけど無理ぽ？
-					owner.maidInventory.decrStackSize(owner.maidInventory.currentItem, 1);
+					owner.getMaidInventory().decrStackSize(owner.getMaidInventory().currentItem, 1);
 					// インベントリをブチマケロ！
-					owner.maidInventory.dropAllItems(true);
+					owner.getMaidInventory().dropAllItems(true);
 					timeSinceIgnited = -1;
 					owner.setDead();
 					// Mobによる破壊の是非
@@ -177,6 +177,8 @@ public class EntityMode_Shearer extends EntityModeBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableShearer) return false;
+
 		ItemStack litemstack = owner.getHandSlotForModeChange();;
 		if (!litemstack.isEmpty()) {
 			if (litemstack.getItem() instanceof ItemShears) {
@@ -196,6 +198,7 @@ public class EntityMode_Shearer extends EntityModeBase {
 
 	@Override
 	public boolean setMode(int pMode) {
+		if(!LittleMaidReengaged.cfg_enableShearer) return false;
 		switch (pMode) {
 		case mmode_Ripper :
 			owner.setBloodsuck(false);
@@ -227,8 +230,8 @@ public class EntityMode_Shearer extends EntityModeBase {
 		switch (pMode) {
 		case mmode_Ripper :
 		case mmode_TNTD :
-			for (li = 0; li < owner.maidInventory.getSizeInventory() - 1; li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory() - 1; li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// はさみ
@@ -238,9 +241,9 @@ public class EntityMode_Shearer extends EntityModeBase {
 			}
 			break;
 		case mmode_Detonator :
-			for (li = 0; li < owner.maidInventory.getSizeInventory(); li++) {
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory(); li++) {
 				// 爆発物
-				if (isTriggerItem(pMode, owner.maidInventory.getStackInSlot(li))) {
+				if (isTriggerItem(pMode, owner.getMaidInventory().getStackInSlot(li))) {
 					return li;
 				}
 			}
@@ -280,7 +283,7 @@ public class EntityMode_Shearer extends EntityModeBase {
 				try {
 					lis.damageItem((Integer)ObfuscationReflectionHelper.getPrivateValue(EntityCreeper.class,
 							(EntityCreeper)pEntity, "field_70833_d", "timeSinceIgnited"), owner);
-//							(EntityCreeper)pEntity, 1), owner.maidAvatar);
+//							(EntityCreeper)pEntity, 1), owner.getMaidAvatar());
 					ObfuscationReflectionHelper.setPrivateValue(EntityCreeper.class, (EntityCreeper)pEntity, 1, "field_70833_d", "timeSinceIgnited");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -291,16 +294,16 @@ public class EntityMode_Shearer extends EntityModeBase {
 			} else if (pEntity instanceof EntityTNTPrimed) {
 				pEntity.setDead();
 				lis.damageItem(1, owner);
-//				lis.damageItem(1, owner.maidAvatar);
+//				lis.damageItem(1, owner.getMaidAvatar());
 				owner.setSwing(20, EnumSound.attack_bloodsuck, false);
 				owner.addMaidExperience(4.5f);
 			} else {
-				owner.maidAvatar.interactOn(pEntity, EnumHand.MAIN_HAND);
+				owner.getMaidAvatar().interactOn(pEntity, EnumHand.MAIN_HAND);
 				owner.setSwing(20, EnumSound.attack, false);
 				owner.addMaidExperience(2.1f);
 			}
 			if (lis.getCount() <= 0) {
-				owner.maidInventory.setInventoryCurrentSlotContents(ItemStack.EMPTY);
+				owner.getMaidInventory().setInventoryCurrentSlotContents(ItemStack.EMPTY);
 				owner.getNextEquipItem();
 			}
 		}
@@ -315,7 +318,7 @@ public class EntityMode_Shearer extends EntityModeBase {
 
 	@Override
 	public boolean checkEntity(int pMode, Entity pEntity) {
-		if (owner.maidInventory.currentItem < 0) {
+		if (owner.getMaidInventory().currentItem < 0) {
 			return false;
 		}
 		switch (pMode) {

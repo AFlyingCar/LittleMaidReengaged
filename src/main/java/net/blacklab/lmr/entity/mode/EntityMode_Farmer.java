@@ -3,6 +3,7 @@ package net.blacklab.lmr.entity.mode;
 import java.util.Iterator;
 
 import net.blacklab.lib.minecraft.vector.VectorUtil;
+import net.blacklab.lmr.LittleMaidReengaged;
 import net.blacklab.lmr.achievements.AchievementsLMRE;
 import net.blacklab.lmr.api.mode.UtilModeFarmer;
 import net.blacklab.lmr.entity.EntityLittleMaid;
@@ -66,6 +67,8 @@ public class EntityMode_Farmer extends EntityModeBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableFarmer) return false;
+
 		// TODO 自動生成されたメソッド・スタブ
 		ItemStack litemstack = owner.getHandSlotForModeChange();
 		if (!litemstack.isEmpty()) {
@@ -82,6 +85,7 @@ public class EntityMode_Farmer extends EntityModeBase {
 
 	@Override
 	public boolean setMode(int pMode) {
+		if(!LittleMaidReengaged.cfg_enableFarmer) return false;
 		// TODO 自動生成されたメソッド・スタブ
 		switch (pMode) {
 		case mmode_Farmer :
@@ -106,8 +110,8 @@ public class EntityMode_Farmer extends EntityModeBase {
 		// モードに応じた識別判定、速度優先
 		switch (pMode) {
 		case mmode_Farmer :
-			for (li = 0; li < owner.maidInventory.getSizeInventory() - 1; li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory() - 1; li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// クワ
@@ -172,17 +176,17 @@ public class EntityMode_Farmer extends EntityModeBase {
 		boolean haveNothing = !UtilModeFarmer.isHoe(owner,curStack);
 
 		if (!haveNothing && isUnfarmedLand(px,py,pz) &&
-				curStack.onItemUse(owner.maidAvatar, owner.world, new BlockPos(px, py, pz), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS) {
+				curStack.onItemUse(owner.getMaidAvatar(), owner.world, new BlockPos(px, py, pz), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS) {
 			owner.setSwing(10, EnumSound.Null, false);
 			owner.playLittleMaidSound(EnumSound.farmer_farm, false);
 
 			/*
-			if (owner.maidAvatar.capabilities.isCreativeMode) {
+			if (owner.getMaidAvatar().capabilities.isCreativeMode) {
 				lis.stackSize = li;
 			}
 			*/
 			if (curStack.getCount() <= 0 || (curStack.isItemStackDamageable() && curStack.getItemDamage() == curStack.getMaxDamage())) {
-				owner.maidInventory.setInventoryCurrentSlotContents(ItemStack.EMPTY);
+				owner.getMaidInventory().setInventoryCurrentSlotContents(ItemStack.EMPTY);
 				owner.getNextEquipItem();
 			}
 //			owner.getNavigator().clearPathEntity();
@@ -191,19 +195,25 @@ public class EntityMode_Farmer extends EntityModeBase {
 			//種を持っている
 			int index = getHadSeedIndex();
 			if(index!=-1){
-				ItemStack stack = owner.maidInventory.getStackInSlot(index);
+				ItemStack stack = owner.getMaidInventory().getStackInSlot(index);
 				int li = stack.getCount();
-				int originalEquippedIndex = owner.maidInventory.currentItem;
-				owner.maidInventory.currentItem = index;
-				stack.onItemUse(owner.maidAvatar, owner.world, new BlockPos(px,py,pz), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5F, 1.0F, 0.5F);
-				owner.maidInventory.currentItem = originalEquippedIndex;
-				owner.playLittleMaidSound(EnumSound.farmer_plant, false);
-				if (owner.maidAvatar.capabilities.isCreativeMode) {
-					stack.setCount(li);
-				}
-				owner.setSwing(10, EnumSound.Null, false);
-				if(stack.getCount()<=0){
-					owner.maidInventory.setInventorySlotContents(index, ItemStack.EMPTY);
+				int originalEquippedIndex = owner.getMaidInventory().currentItem;
+				owner.getMaidInventory().currentItem = index;
+				try {
+					if(owner != null && owner.getMaidAvatar() != null && owner.getMaidInventory() != null) {
+						stack.onItemUse(owner.getMaidAvatar(), owner.world, new BlockPos(px,py,pz), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5F, 1.0F, 0.5F);
+						owner.getMaidInventory().currentItem = originalEquippedIndex;
+						owner.playLittleMaidSound(EnumSound.farmer_plant, false);
+						if (owner.getMaidAvatar().capabilities.isCreativeMode) {
+							stack.setCount(li);
+						}
+						owner.setSwing(10, EnumSound.Null, false);
+						if(stack.getCount()<=0){
+							owner.getMaidInventory().setInventorySlotContents(index, ItemStack.EMPTY);
+						}
+					}
+				} catch(NullPointerException exception) {
+					exception.printStackTrace();
 				}
 			}
 		}
@@ -239,16 +249,16 @@ public class EntityMode_Farmer extends EntityModeBase {
 	public void updateAITick(int pMode) {
 		if (pMode == mmode_Farmer) {
 			if(owner.getAIMoveSpeed() > 0.5F) owner.setAIMoveSpeed(0.5F);
-			if(owner.maidInventory.getFirstEmptyStack() < 0){
+			if(owner.getMaidInventory().getFirstEmptyStack() < 0){
 				owner.setMaidMode("FarmPorter");
 			}
 		}
 	}
 
 	protected int getHadSeedIndex(){
-		for (int i=0; i < owner.maidInventory.getSizeInventory(); i++) {
+		for (int i=0; i < owner.getMaidInventory().getSizeInventory(); i++) {
 			ItemStack pStack;
-			if (!(pStack = owner.maidInventory.getStackInSlot(i)).isEmpty() && UtilModeFarmer.isSeed(owner.getMaidMasterUUID(), pStack.getItem())) {
+			if (!(pStack = owner.getMaidInventory().getStackInSlot(i)).isEmpty() && UtilModeFarmer.isSeed(owner.getMaidMasterUUID(), pStack.getItem())) {
 				return i;
 			}
 		}

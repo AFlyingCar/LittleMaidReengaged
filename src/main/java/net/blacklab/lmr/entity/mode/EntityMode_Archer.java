@@ -90,11 +90,13 @@ public class EntityMode_Archer extends EntityModeBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableArcher) return false;
+
 		ItemStack litemstack = owner.getHandSlotForModeChange();
 
 		if (!litemstack.isEmpty()) {
 			if (litemstack.getItem() instanceof ItemBow || TriggerSelect.checkTrigger(owner.getMaidMasterUUID(), "Bow", litemstack.getItem())) {
-				if (owner.maidInventory.getInventorySlotContainItem(ItemFlintAndSteel.class) > -1) {
+				if (owner.getMaidInventory().getInventorySlotContainItem(ItemFlintAndSteel.class) > -1) {
 					owner.setMaidMode("Blazingstar");
 					if (pentityplayer != null) {
 						AchievementsLMRE.grantAdvancement(pentityplayer, "blazingstar");
@@ -143,8 +145,8 @@ public class EntityMode_Archer extends EntityModeBase {
 		case mmode_Archer :
 		case mmode_Blazingstar :
 			// Except off hand slot
-			for (li = 0; li < owner.maidInventory.getSizeInventory() - 1; li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory() - 1; li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// 射手
@@ -182,7 +184,7 @@ public class EntityMode_Archer extends EntityModeBase {
 
 	@Override
 	public boolean checkEntity(int pMode, Entity pEntity) {
-		if (owner.maidInventory.getInventorySlotContainItem(ItemArrow.class) < 0) return false;
+		if (owner.getMaidInventory().getInventorySlotContainItem(ItemArrow.class) < 0) return false;
 		if (!MaidHelper.isTargetReachable(owner, pEntity, 100)) return false;
 
 		return !owner.getIFF(pEntity);
@@ -202,7 +204,7 @@ public class EntityMode_Archer extends EntityModeBase {
 
 	@Override
 	public void updateAITick(int pMode) {
-		if (owner.maidInventory.getInventorySlotContainItem(ItemArrow.class) < 0) {
+		if (owner.getMaidInventory().getInventorySlotContainItem(ItemArrow.class) < 0) {
 			owner.setAttackTarget(null);
 		}
 
@@ -240,13 +242,13 @@ public class EntityMode_Archer extends EntityModeBase {
 		if (owner.getAttackTarget() == null || !owner.getAttackTarget().isEntityAlive()) {
 			// 対象が死んだ
 			if (!owner.weaponReload) {
-				if (owner.maidAvatar.isHandActive()) {
+				if (owner.getMaidAvatar().isHandActive()) {
 					// ターゲットが死んでいる時はアイテムの使用をクリア
 //					if (owner.getAvatarIF().getIsItemReload()) {
-						owner.maidAvatar.stopActiveHand();
+						owner.getMaidAvatar().stopActiveHand();
 //						LittleMaidReengaged.Debug(String.format("id:%d cancel reload.", owner.getEntityId()));
 //					} else {
-//						owner.maidAvatar.clearItemInUse();
+//						owner.getMaidAvatar().clearItemInUse();
 						LittleMaidReengaged.Debug(String.format("id:%d clear.", owner.getEntityId()));
 //					}
 				}
@@ -254,9 +256,9 @@ public class EntityMode_Archer extends EntityModeBase {
 				owner.mstatAimeBow = true;
 			}
 		}
-		if (owner.weaponReload && !owner.maidAvatar.isHandActive()) {
+		if (owner.weaponReload && !owner.getMaidAvatar().isHandActive()) {
 			// 特殊リロード
-			owner.maidInventory.getCurrentItem().useItemRightClick(owner.world, owner.maidAvatar, EnumHand.MAIN_HAND);
+			owner.getMaidInventory().getCurrentItem().useItemRightClick(owner.world, owner.getMaidAvatar(), EnumHand.MAIN_HAND);
 			LittleMaidReengaged.Debug("id:%d force reload.", owner.getEntityId());
 			owner.mstatAimeBow = true;
 		}

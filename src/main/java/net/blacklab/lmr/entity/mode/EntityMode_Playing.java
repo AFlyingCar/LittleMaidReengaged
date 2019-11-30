@@ -193,7 +193,7 @@ public class EntityMode_Playing extends EntityModeBase {
 			// リロード
 			//1.8検討
 			if (owner.arrowHitTimer <= 0) {
-				if (owner.maidInventory.addItemStackToInventory(new ItemStack(Items.SNOWBALL))) {
+				if (owner.getMaidInventory().addItemStackToInventory(new ItemStack(Items.SNOWBALL))) {
 					owner.playSound("entity.item.pickup");
 					if (owner.getPlayingRole() == mpr_StockShooter) {
 						owner.setSwing(5, EnumSound.collect_snow, false);
@@ -221,7 +221,7 @@ public class EntityMode_Playing extends EntityModeBase {
 			// リロード
 //			isMaidChaseWait = true;
 			if (owner.arrowHitTimer <= 0) {
-				if (owner.maidInventory.addItemStackToInventory(new ItemStack(Items.SNOWBALL))) {
+				if (owner.getMaidInventory().addItemStackToInventory(new ItemStack(Items.SNOWBALL))) {
 					owner.setSwing(5, EnumSound.collect_snow, false);
 					owner.playSound("entity.item.pickup");
 					fcounter = 0;
@@ -299,7 +299,7 @@ public class EntityMode_Playing extends EntityModeBase {
 
 			// チェスト判定
 			if (owner.getAttackTarget() == null
-					&& owner.maidInventory.getFirstEmptyStack() == -1) {
+					&& owner.getMaidInventory().getFirstEmptyStack() == -1) {
 
 			}
 		}
@@ -338,8 +338,8 @@ public class EntityMode_Playing extends EntityModeBase {
 	public int getNextEquipItem(int pMode) {
 		ItemStack litemstack = ItemStack.EMPTY;
 		if (owner.getPlayingRole() != 0) {
-			for (int li = 0; li < owner.maidInventory.getSizeInventory(); li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (int li = 0; li < owner.getMaidInventory().getSizeInventory(); li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// 雪球

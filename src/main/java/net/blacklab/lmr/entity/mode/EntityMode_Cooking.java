@@ -1,5 +1,6 @@
 package net.blacklab.lmr.entity.mode;
 
+import net.blacklab.lmr.LittleMaidReengaged;
 import net.blacklab.lmr.achievements.AchievementsLMRE;
 import net.blacklab.lmr.entity.EntityLittleMaid;
 import net.blacklab.lmr.inventory.InventoryLittleMaid;
@@ -50,6 +51,8 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableCooking) return false;
+
 		ItemStack litemstack = owner.getHandSlotForModeChange();
 		if (!litemstack.isEmpty()) {
 			if (ItemHelper.isItemBurned(litemstack)) {
@@ -85,9 +88,9 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 		// モードに応じた識別判定、速度優先
 		switch (pMode) {
 		case mmode_Cooking :
-			for (li = 0; li < owner.maidInventory.getSizeInventory(); li++) {
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory(); li++) {
 				// 調理
-				if (owner.maidInventory.isItemBurned(li)) {
+				if (owner.getMaidInventory().isItemBurned(li)) {
 					swapItemIntoMainHandSlot(li);
 					return InventoryLittleMaid.handInventoryOffset;
 				}
@@ -108,7 +111,7 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 		if (!super.isSearchBlock()) return false;
 
 		// 燃焼アイテムを持っている？
-		if (!owner.getCurrentEquippedItem().isEmpty() && owner.maidInventory.getSmeltingItem() > -1) {
+		if (!owner.getCurrentEquippedItem().isEmpty() && owner.getMaidInventory().getSmeltingItem() > -1) {
 			fDistance = Double.MAX_VALUE;
 			owner.clearTilePos();
 			owner.setSneaking(false);
@@ -162,12 +165,12 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 			if (!litemstack.isEmpty()) {
 				if (litemstack.getCount() > 0) {
 					li = litemstack.getCount();
-					if (owner.maidInventory.addItemStackToInventory(litemstack)) {
+					if (owner.getMaidInventory().addItemStackToInventory(litemstack)) {
 						dropExpOrb(litemstack, li - litemstack.getCount());
 						owner.playSound("entity.item.pickup");
 						owner.setSwing(5, EnumSound.cookingOver, false);
 						owner.addMaidExperience(4.2f);
-//                    	if (!pEntityLittleMaid.maidInventory.isItemBurned(pEntityLittleMaid.maidInventory.currentItem)) {
+//                    	if (!pEntityLittleMaid.getMaidInventory().isItemBurned(pEntityLittleMaid.getMaidInventory().currentItem)) {
 						owner.getNextEquipItem();
 //                    	}
 						lflag = true;
@@ -179,10 +182,10 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 			// 調理可能品を竈にぽーい
 			if (!lflag && ltile.getStackInSlot(0).isEmpty()) {
 				litemstack = ltile.getStackInSlot(2);
-				li = owner.maidInventory.getSmeltingItem();
+				li = owner.getMaidInventory().getSmeltingItem();
 				owner.setEquipItem(li);
 				if (li > -1) {
-					litemstack = owner.maidInventory.getStackInSlot(li);
+					litemstack = owner.getMaidInventory().getStackInSlot(li);
 					// レシピ対応品
 					if (litemstack.getCount() >= ltile.getInventoryStackLimit()) {
 						ltile.setInventorySlotContents(0, litemstack.splitStack(ltile.getInventoryStackLimit()));
@@ -190,7 +193,7 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 						ltile.setInventorySlotContents(0, litemstack.splitStack(litemstack.getCount()));
 					}
 					if (litemstack.getCount() <= 0) {
-						owner.maidInventory.setInventorySlotContents(li, ItemStack.EMPTY);
+						owner.getMaidInventory().setInventorySlotContents(li, ItemStack.EMPTY);
 					}
 					owner.playSound("entity.item.pickup");
 					owner.setSwing(5, EnumSound.cookingStart, false);
@@ -209,7 +212,7 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 						ltile.setInventorySlotContents(1, litemstack.splitStack(litemstack.getCount()));
 					}
 					if (litemstack.getCount() <= 0) {
-						owner.maidInventory.setInventoryCurrentSlotContents(ItemStack.EMPTY);
+						owner.getMaidInventory().setInventoryCurrentSlotContents(ItemStack.EMPTY);
 					}
 					owner.getNextEquipItem();
 					owner.playSound("entity.item.pickup");
@@ -221,7 +224,7 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 					} else {
 						// 燃やせるアイテムを持ってないので調理可能品を回収
 						ItemStack litemstack2 = ltile.removeStackFromSlot(0);
-						if (owner.maidInventory.addItemStackToInventory(litemstack2)) {
+						if (owner.getMaidInventory().addItemStackToInventory(litemstack2)) {
 							owner.playSound("entity.item.pickup");
 							owner.setSwing(5, EnumSound.Null, false);
 							owner.getNextEquipItem();
@@ -236,7 +239,7 @@ public class EntityMode_Cooking extends EntityModeBlockBase {
 			// 燃え終わってるのに燃料口に何かあるなら回収する
 			if (!lflag && !ltile.isBurning() && !ltile.getStackInSlot(1).isEmpty()) {
 				ItemStack litemstack2 = ltile.removeStackFromSlot(1);
-				if (owner.maidInventory.addItemStackToInventory(litemstack2)) {
+				if (owner.getMaidInventory().addItemStackToInventory(litemstack2)) {
 					owner.playSound("entity.item.pickup");
 					owner.setSwing(5, EnumSound.Null, false);
 					owner.getNextEquipItem();

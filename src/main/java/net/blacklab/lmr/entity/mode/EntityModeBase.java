@@ -146,11 +146,11 @@ public abstract class EntityModeBase {
 	 * @param index
 	 */
 	protected void swapItemIntoMainHandSlot(int index) {
-		ItemStack lStack = owner.maidInventory.getStackInSlot(index);
+		ItemStack lStack = owner.getMaidInventory().getStackInSlot(index);
 		ItemStack dStack = owner.getHandSlotForModeChange();
 
-		owner.maidInventory.setInventorySlotContents(InventoryLittleMaid.handInventoryOffset, lStack);
-		owner.maidInventory.setInventorySlotContents(index, dStack);
+		owner.getMaidInventory().setInventorySlotContents(InventoryLittleMaid.handInventoryOffset, lStack);
+		owner.getMaidInventory().setInventorySlotContents(index, dStack);
 	}
 
 	/**

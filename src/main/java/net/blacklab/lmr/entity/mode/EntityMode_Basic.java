@@ -156,7 +156,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 	public boolean isSearchBlock() {
 		if ((owner.getMaidModeInt() == mmode_Escorter||owner.getMaidModeInt()==mmode_FarmPorter)
 				&& owner.isFreedom() && !owner.isMaidWait() &&
-				owner.maidInventory.getFirstEmptyStack() == -1) {
+				owner.getMaidInventory().getFirstEmptyStack() == -1) {
 			// 対象をまだ見つけていないときは検索を行う。
 			fDistance = 100F;
 			return myInventory == null;
@@ -243,7 +243,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 	protected void clearMy() {
 		myInventory = null;
 		if (myChest != null) {
-			myChest.closeInventory(owner.maidAvatar);
+			myChest.closeInventory(owner.getMaidAvatar());
 			myChest = null;
 		}
 		owner.clearTilePos();
@@ -262,7 +262,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 					if (myChest == null) {
 						getChest();
 						if (myChest != null) {
-							myChest.openInventory(owner.maidAvatar);
+							myChest.openInventory(owner.getMaidAvatar());
 						} else {
 							// 開かないチェスト
 							myInventory = null;
@@ -311,7 +311,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 			lastdistance = distance;
 			// レンジ外のチェストは閉じる
 			if (myChest != null) {
-				myChest.closeInventory(owner.maidAvatar);
+				myChest.closeInventory(owner.getMaidAvatar());
 				myChest = null;
 			}
 		}
@@ -359,7 +359,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 			// 砂糖、時計、被っているヘルム以外のアイテムを突っ込む
 			ItemStack is;
 			LittleMaidReengaged.Debug(String.format("getChest:%d", maidSearchCount));
-			while ((is = owner.maidInventory.getStackInSlot(maidSearchCount)).isEmpty() && maidSearchCount < InventoryLittleMaid.maxInventorySize) {
+			while ((is = owner.getMaidInventory().getStackInSlot(maidSearchCount)).isEmpty() && maidSearchCount < InventoryLittleMaid.maxInventorySize) {
 				maidSearchCount++;
 			}
 
@@ -395,7 +395,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 						}
 					}
 					if (is.getCount() <= 0) {
-						owner.maidInventory.setInventorySlotContents(maidSearchCount, null);
+						owner.getMaidInventory().setInventorySlotContents(maidSearchCount, null);
 					}
 					if (f) {
 						owner.playSound("entity.item.pickup");
@@ -411,7 +411,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 				lastdistance = 0D;
 				LittleMaidReengaged.Debug("endChest.");
 				// 空きができたら捜索終了
-				if (owner.maidInventory.getFirstEmptyStack() > -1) {
+				if (owner.getMaidInventory().getFirstEmptyStack() > -1) {
 					LittleMaidReengaged.Debug("Search clear.");
 					fusedTiles.clear();
 //					if(owner.getMaidModeInt()==mmode_FarmerChest){
@@ -433,7 +433,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 					if (myChest == null) {
 						myChest = (IInventory)lentity;
 						fusedTiles.add(myChest);
-						myChest.openInventory(owner.maidAvatar);
+						myChest.openInventory(owner.getMaidAvatar());
 					}
 					if (myChest != null) {
 						owner.getLookHelper().setLookPositionWithEntity(lentity, 30F, 40F);
@@ -454,7 +454,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 //						mod_littleMaidMob.Debug(String.format("Rerute:%b", hasPath()));
 					}
 					if (myChest != null) {
-						myChest.closeInventory(owner.maidAvatar);
+						myChest.closeInventory(owner.getMaidAvatar());
 						myChest = null;
 					}
 				}
@@ -494,7 +494,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 						if (pitemstack.getItem() instanceof ItemAppleGold) {
 							// ゴールデンアッポー
 							if(!owner.world.isRemote) {
-								((ItemAppleGold)pitemstack.getItem()).onItemUseFinish(pitemstack, owner.world, owner.maidAvatar);
+								((ItemAppleGold)pitemstack.getItem()).onItemUseFinish(pitemstack, owner.world, owner.getMaidAvatar());
 							}
 							return true;
 						}
@@ -516,7 +516,7 @@ public class EntityMode_Basic extends EntityModeBlockBase {
 	@Override
 	public void updateAITick(int pMode) {
 		if(pMode == EntityMode_Basic.mmode_FarmPorter &&
-				owner.maidInventory.getFirstEmptyStack()>-1 &&
+				owner.getMaidInventory().getFirstEmptyStack()>-1 &&
 				!owner.getWorkingCount().isEnable()){
 			owner.setMaidMode("Farmer");
 		}

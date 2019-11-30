@@ -1,6 +1,7 @@
 package net.blacklab.lmr.entity.mode;
 
 import net.blacklab.lib.minecraft.vector.VectorUtil;
+import net.blacklab.lmr.LittleMaidReengaged;
 import net.blacklab.lmr.achievements.AchievementsLMRE;
 import net.blacklab.lmr.entity.EntityLittleMaid;
 import net.blacklab.lmr.inventory.InventoryLittleMaid;
@@ -64,6 +65,8 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableTorchLayer) return false;
+
 		ItemStack litemstack = owner.getHandSlotForModeChange();
 		if (!litemstack.isEmpty()) {
 			if (litemstack.getItem() == Item.getItemFromBlock(Blocks.TORCH) || TriggerSelect.checkTrigger(owner.getMaidMasterUUID(), "Torch", litemstack.getItem())) {
@@ -79,6 +82,7 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 
 	@Override
 	public boolean setMode(int pMode) {
+		if(!LittleMaidReengaged.cfg_enableTorchLayer) return false;
 		switch (pMode) {
 		case mmode_Torcher :
 			owner.setBloodsuck(false);
@@ -102,8 +106,8 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 		// モードに応じた識別判定、速度優先
 		switch (pMode) {
 		case mmode_Torcher :
-			for (li = 0; li < owner.maidInventory.getSizeInventory(); li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory(); li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// 松明
@@ -160,7 +164,7 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 		// アイテムを置けない場合
 		Item heldItem = owner.getHeldItem(EnumHand.MAIN_HAND).getItem();
 		if (heldItem instanceof ItemBlock) {
-			if (!canPlaceItemBlockOnSide(owner.world, px, py - 1, pz, EnumFacing.UP, owner.maidAvatar, owner.getHeldItem(EnumHand.MAIN_HAND), (ItemBlock) heldItem)) {
+			if (!canPlaceItemBlockOnSide(owner.world, px, py - 1, pz, EnumFacing.UP, owner.getMaidAvatar(), owner.getHeldItem(EnumHand.MAIN_HAND), (ItemBlock) heldItem)) {
 				return false;
 			}
 		}
@@ -184,14 +188,14 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 
 		int li = lis.getCount();
 		// TODO:当たり判定をどうするか
-		if (lis.onItemUse(owner.maidAvatar, owner.world, new BlockPos(px, py - 1, pz), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS) {
+		if (lis.onItemUse(owner.getMaidAvatar(), owner.world, new BlockPos(px, py - 1, pz), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS) {
 			owner.setSwing(10, EnumSound.installation, false);
 			owner.addMaidExperience(0.32f);
-			if (owner.maidAvatar.capabilities.isCreativeMode) {
+			if (owner.getMaidAvatar().capabilities.isCreativeMode) {
 				lis.setCount(li);
 			}
 			if (lis.getCount() <= 0) {
-				owner.maidInventory.setInventoryCurrentSlotContents(ItemStack.EMPTY);
+				owner.getMaidInventory().setInventoryCurrentSlotContents(ItemStack.EMPTY);
 				owner.getNextEquipItem();
 			}
 		}
@@ -259,7 +263,7 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 					for (int lyi : lil) {
 						int lv = getBlockLighting(lxx + x, lyi, lzz + z);
 						if (ll > lv && lii instanceof ItemBlock &&
-								canPlaceItemBlockOnSide(lworld, lxx + x, lyi - 1, lzz + z, EnumFacing.UP, owner.maidAvatar, lis, (ItemBlock)lii)
+								canPlaceItemBlockOnSide(lworld, lxx + x, lyi - 1, lzz + z, EnumFacing.UP, owner.getMaidAvatar(), lis, (ItemBlock)lii)
 								&& canBlockBeSeen(lxx + x, lyi - 1, lzz + z, true, false, true)) {
 //						if (ll > lv && lworld.getBlockMaterial(lxx + x, lyi - 1, lzz + z).isSolid()
 //								&& (lworld.getBlockMaterial(lxx + x, lyi, lzz + z) == Material.air
@@ -275,15 +279,15 @@ public class EntityMode_TorchLayer extends EntityModeBase {
 				}
 			}
 
-			if (ll < 8 && lis.onItemUse(owner.maidAvatar, owner.world, new BlockPos(ltx, lty, ltz), EnumFacing.UP, 0.5F, 1.0F, 0.5F)) {
+			if (ll < 8 && lis.onItemUse(owner.getMaidAvatar(), owner.world, new BlockPos(ltx, lty, ltz), EnumFacing.UP, 0.5F, 1.0F, 0.5F)) {
 //				mod_LMM_littleMaidMob.Debug("torch-inst: %d, %d, %d: %d", ltx, lty, ltz, ll);
 				owner.setSwing(10, LMM_EnumSound.installation, false);
 				owner.getNavigator().clearPathEntity();
-				if (owner.maidAvatar.capabilities.isCreativeMode) {
+				if (owner.getMaidAvatar().capabilities.isCreativeMode) {
 					lis.stackSize = lic;
 				}
 				if (lis.stackSize <= 0) {
-					owner.maidInventory.setInventoryCurrentSlotContents(null);
+					owner.getMaidInventory().setInventoryCurrentSlotContents(null);
 					owner.getNextEquipItem();
 				}
 			}

@@ -3,6 +3,7 @@ package net.blacklab.lmr.entity.mode;
 import java.util.Iterator;
 import java.util.List;
 
+import net.blacklab.lmr.LittleMaidReengaged;
 import net.blacklab.lmr.achievements.AchievementsLMRE;
 import net.blacklab.lmr.entity.EntityLittleMaid;
 import net.blacklab.lmr.inventory.InventoryLittleMaid;
@@ -57,6 +58,8 @@ public class EntityMode_Healer extends EntityModeBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableHealer) return false;
+
 		ItemStack litemstack = owner.getHandSlotForModeChange();
 		if (!litemstack.isEmpty()) {
 			if (isTriggerItem(mmode_Healer, litemstack)) {
@@ -72,6 +75,7 @@ public class EntityMode_Healer extends EntityModeBase {
 
 	@Override
 	public boolean setMode(int pMode) {
+		if(!LittleMaidReengaged.cfg_enableHealer) return false;
 		switch (pMode) {
 		case mmode_Healer :
 			owner.setBloodsuck(false);
@@ -92,8 +96,8 @@ public class EntityMode_Healer extends EntityModeBase {
 		switch (pMode) {
 		case mmode_Healer:
 			// Healer
-			for (int i = 0; i < owner.maidInventory.getSizeInventory(); i++) {
-				ItemStack is = owner.maidInventory.getStackInSlot(i);
+			for (int i = 0; i < owner.getMaidInventory().getSizeInventory(); i++) {
+				ItemStack is = owner.getMaidInventory().getStackInSlot(i);
 				if (is.isEmpty()) continue;
 				// 対象は食料かポーション
 				if (isTriggerItem(pMode, is)) {
@@ -143,7 +147,7 @@ public class EntityMode_Healer extends EntityModeBase {
 						// 主の状態に合わせてアイテムを選択
 						if (lmaster.getHealth() < 9F) {
 							// HPが減っているときはポーションを使う
-							int j = owner.maidInventory.getInventorySlotContainItemPotion(false, Potion.getIdFromPotion(Potion.getPotionFromResourceLocation("instant_health")), lmaster.isEntityUndead());
+							int j = owner.getMaidInventory().getInventorySlotContainItemPotion(false, Potion.getIdFromPotion(Potion.getPotionFromResourceLocation("instant_health")), lmaster.isEntityUndead());
 							if (j > -1) {
 								owner.setEquipItem(j);
 								break;
@@ -151,7 +155,7 @@ public class EntityMode_Healer extends EntityModeBase {
 						}
 						if (h < 18) {
 							// 自然回復できない腹具合なら食料
-							int j = owner.maidInventory.getInventorySlotContainItemFood();
+							int j = owner.getMaidInventory().getInventorySlotContainItemFood();
 							if (j > -1) {
 								owner.setEquipItem(j);
 								break;
@@ -171,7 +175,7 @@ public class EntityMode_Healer extends EntityModeBase {
 								if (itemstack1.getCount() <= 0) {
 									itemstack1 = ItemStack.EMPTY;
 								}
-								owner.maidInventory.setInventoryCurrentSlotContents(itemstack1);
+								owner.getMaidInventory().setInventoryCurrentSlotContents(itemstack1);
 								owner.getNextEquipItem();
 								owner.addMaidExperience(2.4f);
 							}

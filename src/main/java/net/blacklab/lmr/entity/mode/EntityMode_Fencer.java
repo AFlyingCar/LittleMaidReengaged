@@ -101,6 +101,8 @@ public class EntityMode_Fencer extends EntityModeBase {
 
 	@Override
 	public boolean changeMode(EntityPlayer pentityplayer) {
+		if(!LittleMaidReengaged.cfg_enableFencer) return false;
+
 		ItemStack litemstack = owner.getHandSlotForModeChange();
 		if (!litemstack.isEmpty()) {
 			if (isTriggerItem(mmode_Fencer, litemstack)) {
@@ -128,14 +130,15 @@ public class EntityMode_Fencer extends EntityModeBase {
 
 	@Override
 	public boolean setMode(int pMode) {
+		if(!LittleMaidReengaged.cfg_enableFencer) return false;
 		switch (pMode) {
 		case mmode_Fencer :
-//			pentitylittlemaid.maidInventory.currentItem = getNextEquipItem(pentitylittlemaid, pMode);
+//			pentitylittlemaid.getMaidInventory().currentItem = getNextEquipItem(pentitylittlemaid, pMode);
 			owner.setBloodsuck(false);
 			owner.aiAttack.isGuard = true;
 			return true;
 		case mmode_Bloodsucker :
-//			pentitylittlemaid.maidInventory.currentItem = getNextEquipItem(pentitylittlemaid, pMode);
+//			pentitylittlemaid.getMaidInventory().currentItem = getNextEquipItem(pentitylittlemaid, pMode);
 			owner.setBloodsuck(true);
 			return true;
 		}
@@ -158,8 +161,8 @@ public class EntityMode_Fencer extends EntityModeBase {
 		// モードに応じた識別判定、速度優先
 		switch (pMode) {
 		case mmode_Fencer :
-			for (li = 0; li < owner.maidInventory.getSizeInventory() - 1; li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory() - 1; li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// 剣
@@ -181,8 +184,8 @@ public class EntityMode_Fencer extends EntityModeBase {
 			}
 			break;
 		case mmode_Bloodsucker :
-			for (li = 0; li < owner.maidInventory.getSizeInventory(); li++) {
-				litemstack = owner.maidInventory.getStackInSlot(li);
+			for (li = 0; li < owner.getMaidInventory().getSizeInventory(); li++) {
+				litemstack = owner.getMaidInventory().getStackInSlot(li);
 				if (litemstack.isEmpty()) continue;
 
 				// 斧
