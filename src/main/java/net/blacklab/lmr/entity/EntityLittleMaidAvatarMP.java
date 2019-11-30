@@ -2,6 +2,7 @@ package net.blacklab.lmr.entity;
 
 import java.util.Collection;
 
+import com.mojang.authlib.GameProfile;
 import net.blacklab.lmr.LittleMaidReengaged;
 import net.blacklab.lmr.util.EnumSound;
 import net.blacklab.lmr.util.helper.CommonHelper;
@@ -16,22 +17,29 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatisticsManagerServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nullable;
 
 
-public class EntityLittleMaidAvatarMP extends FakePlayer implements IEntityLittleMaidAvatar
+public class EntityLittleMaidAvatarMP extends EntityPlayerMP implements IEntityLittleMaidAvatar
 {
 	public EntityLittleMaid avatar;
 	/** いらん？ **/
@@ -44,10 +52,15 @@ public class EntityLittleMaidAvatarMP extends FakePlayer implements IEntityLittl
 	private double appendY;
 	private double appendZ;
 
+	private EntityLittleMaidAvatarMP(WorldServer world, GameProfile name) {
+		super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, name, new PlayerInteractionManager(world));
+
+	}
+
 	public EntityLittleMaidAvatarMP(World par1World)
 	{
-		super(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(par1World == null ? 0 : par1World.provider.getDimension()),
-				CommonHelper.newGameProfile("1", "LMM_EntityLittleMaidAvatar"));
+		this(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(par1World == null ? 0 : par1World.provider.getDimension()),
+  			 CommonHelper.newGameProfile("1", "LMM_EntityLittleMaidAvatar"));
 	}
 
 	public EntityLittleMaidAvatarMP(World par1World, EntityLittleMaid par2EntityLittleMaid) {
@@ -59,12 +72,6 @@ public class EntityLittleMaidAvatarMP extends FakePlayer implements IEntityLittl
 		dataManager = avatar.getDataManager();
 
 //		this.dataManager.register(Statics.dataWatch_AbsorptionAmount, Float.valueOf(0.0F));
-
-		/*
-		 * TODO 要調整
-		 */
-		inventory = avatar.maidInventory;
-		inventory.player = this;
 	}
 
 	// 実績参照
@@ -609,6 +616,16 @@ public class EntityLittleMaidAvatarMP extends FakePlayer implements IEntityLittl
 	public boolean isEntityInvulnerable(DamageSource source){
 		return false;
 	}
+
+	@Override public Vec3d getPositionVector(){ return new Vec3d(0, 0, 0); }
+	@Override public void sendStatusMessage(ITextComponent chatComponent, boolean actionBar){}
+	@Override public void openGui(Object mod, int modGuiId, World world, int x, int y, int z){}
+	@Override public boolean canAttackPlayer(EntityPlayer player){ return false; }
+	@Override public void onDeath(DamageSource source){ return; }
+	@Override public Entity changeDimension(int dim, ITeleporter teleporter){ return this; }
+	@Override public void handleClientSettings(CPacketClientSettings pkt){ return; }
+	@Override @Nullable
+	public MinecraftServer getServer() { return FMLCommonHandler.instance().getMinecraftServerInstance(); }
 
 	@Override
 	public void sendEnterCombat() {

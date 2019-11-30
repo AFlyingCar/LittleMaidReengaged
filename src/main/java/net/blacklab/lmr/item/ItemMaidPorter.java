@@ -72,8 +72,8 @@ public class ItemMaidPorter extends Item {
 				if (!customName.isEmpty()) {
 					lMaid.setCustomNameTag(customName);
 				}
-				lMaid.maidInventory.clear();
-				lMaid.maidInventory.readFromNBT(tagCompound.getTagList(LittleMaidReengaged.DOMAIN + ":MAID_INVENTORY", 10));
+				lMaid.getMaidInventory().clear();
+				lMaid.getMaidInventory().readFromNBT(tagCompound.getTagList(LittleMaidReengaged.DOMAIN + ":MAID_INVENTORY", 10));
 
 				lMaid.setTextureNameMain(tagCompound.getString(LittleMaidReengaged.DOMAIN + ":MAIN_MODEL_NAME"));
 				lMaid.setTextureNameArmor(tagCompound.getString(LittleMaidReengaged.DOMAIN + ":ARMOR_MODEL_NAME"));
