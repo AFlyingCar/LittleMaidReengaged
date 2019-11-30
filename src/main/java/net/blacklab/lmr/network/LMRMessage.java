@@ -31,8 +31,10 @@ public class LMRMessage implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		try{
-			int len = buf.array().length;
+			// int len = buf.array().length;
 			//System.out.println("DEBUG INFO=READABLE BUF:"+buf.readableBytes());
+
+			int len = buf.readableBytes();
 
 			if(len > 2)
 			{

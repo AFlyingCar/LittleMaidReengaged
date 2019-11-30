@@ -153,7 +153,7 @@ public class LMRNetwork
 		case SERVER_UPDATE_SLOTS :
 			// 初回更新とか
 			// インベントリの更新
-			lemaid.maidInventory.clearChanged();
+			lemaid.getMaidInventory().clearChanged();
 			for (SwingStatus lswing : lemaid.mstatSwingStatus) {
 				lswing.lastIndex = -1;
 			}
