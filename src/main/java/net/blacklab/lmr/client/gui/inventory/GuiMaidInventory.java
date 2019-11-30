@@ -122,7 +122,7 @@ public class GuiMaidInventory extends GuiContainer {
 		super(new ContainerInventoryLittleMaid(pPlayer.inventory, elmaid));
 		rand = new Random();
 		playerInventory = pPlayer.inventory;
-		maidInventory = elmaid.maidInventory;
+		maidInventory = elmaid.getMaidInventory();
 		allowUserInput = false;
 		updateCounter = 0;
 		ySizebk = ySize;

@@ -74,7 +74,7 @@ public class RenderLittleMaid extends RenderModelMulti {
 			lmm = (EntityLittleMaid) par1EntityLiving;
 
 			for (int i=0; i<4; i++) {
-				if (!lmm.maidInventory.armorItemInSlot(i).isEmpty()) {
+				if (!lmm.getMaidInventory().armorItemInSlot(i).isEmpty()) {
 					render(par1EntityLiving, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, i);
 				}
 			}
