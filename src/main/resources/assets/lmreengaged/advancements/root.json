@@ -1,7 +1,26 @@
 {
+    "display": {
+        "icon": {
+            "item": "minecraft:cake"
+        },
+        "title": {
+            "translate": "achievement.root"
+        },
+        "description": { "translate": "achievement.root.desc" },
+        "frame": "task",
+        "show_toast": false,
+        "announce_to_chat": false,
+        "hidden": false,
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+    },
     "criteria": {
-        "impossible": {
-            "trigger": "minecraft:impossible"
+        "tick": {
+            "trigger": "minecraft:tick"
         }
-    }
+    },
+    "requirements": [
+        [
+            "tick"
+        ]
+    ]
 }
