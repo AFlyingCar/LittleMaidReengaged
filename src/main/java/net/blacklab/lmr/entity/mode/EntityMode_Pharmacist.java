@@ -163,7 +163,7 @@ public class EntityMode_Pharmacist extends EntityModeBlockBase {
 		}
 
 		// 世界のメイドから
-		checkWorldMaid(ltile);
+		if(checkWorldMaid(ltile)) return false;
 		// 使用していた蒸留器ならそこで終了
 		if (owner.isUsingTile(ltile)) return true;
 

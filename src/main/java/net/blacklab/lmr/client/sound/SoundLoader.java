@@ -246,7 +246,7 @@ public class SoundLoader {
 	 * sounds.jsonの生成
 	 */
 	private void createJson() {
-		File jsonDir = new File(FileList.dirMods, "LittleMaidReengaged");
+		File jsonDir = new File(FileList.dirMods, "littlemaidreengaged");
 		if (jsonDir.isFile()) {
 			throw new IllegalStateException("Remove 'LittleMaidReengaged' file in the mods folder!");
 		}
